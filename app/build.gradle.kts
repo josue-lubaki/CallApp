@@ -1,6 +1,84 @@
+import com.android.build.api.variant.BuildConfigField
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+}
+
+androidComponents {
+    val properties = Properties()
+    val localFile = project.rootProject.file("local.properties")
+    if(localFile.exists()){
+        localFile.inputStream().use { properties.load(it) }
+    }
+
+    val streamApiKey = System.getenv("STREAM_API_KEY") ?: properties.getProperty("STREAM_API_KEY")
+    val streamToken = System.getenv("STREAM_TOKEN") ?: properties.getProperty("STREAM_TOKEN")
+    val streamUserID = System.getenv("STREAM_USER_ID") ?: properties.getProperty("STREAM_USER_ID")
+    val streamCallID = System.getenv("STREAM_CALL_ID") ?: properties.getProperty("STREAM_CALL_ID")
+
+    onVariants(selector().withBuildType("debug")) {
+        it.buildConfigFields.put("STREAM_API_KEY",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamApiKey\"",
+                comment = "STREAM_API_KEY"
+            )
+        )
+        it.buildConfigFields.put("STREAM_TOKEN",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamToken\"",
+                comment = "STREAM_TOKEN"
+            )
+        )
+        it.buildConfigFields.put("STREAM_USER_ID",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamUserID\"",
+                comment = "STREAM_USER_ID"
+            )
+        )
+        it.buildConfigFields.put("STREAM_CALL_ID",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamCallID\"",
+                comment = "STREAM_CALL_ID"
+            )
+        )
+    }
+
+    onVariants(selector().withBuildType("release")) {
+        it.buildConfigFields.put("STREAM_API_KEY",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamApiKey\"",
+                comment = "STREAM_API_KEY"
+            )
+        )
+        it.buildConfigFields.put("STREAM_TOKEN",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamToken\"",
+                comment = "STREAM_TOKEN"
+            )
+        )
+        it.buildConfigFields.put("STREAM_USER_ID",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamUserID\"",
+                comment = "STREAM_USER_ID"
+            )
+        )
+        it.buildConfigFields.put("STREAM_CALL_ID",
+            BuildConfigField(
+                type = "String",
+                value = "\"$streamCallID\"",
+                comment = "STREAM_CALL_ID"
+            )
+        )
+    }
 }
 
 android {
@@ -38,6 +116,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -66,4 +145,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+//    implementation(libs.android.core)
+    implementation(libs.android.ui.compose)
 }
