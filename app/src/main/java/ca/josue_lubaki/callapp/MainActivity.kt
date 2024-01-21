@@ -1,13 +1,18 @@
 package ca.josue_lubaki.callapp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,7 +35,12 @@ import ca.josue_lubaki.callapp.ui.theme.CallAppTheme
 import io.getstream.video.android.compose.permission.LaunchCallPermissions
 import io.getstream.video.android.compose.theme.VideoTheme
 import io.getstream.video.android.compose.ui.components.call.activecall.CallContent
+import io.getstream.video.android.compose.ui.components.call.controls.ControlActions
+import io.getstream.video.android.compose.ui.components.call.controls.actions.FlipCameraAction
+import io.getstream.video.android.compose.ui.components.call.controls.actions.ToggleCameraAction
+import io.getstream.video.android.compose.ui.components.call.controls.actions.ToggleMicrophoneAction
 import io.getstream.video.android.compose.ui.components.call.renderer.FloatingParticipantVideo
+import io.getstream.video.android.compose.ui.components.call.renderer.ParticipantVideo
 import io.getstream.video.android.compose.ui.components.video.VideoRenderer
 import io.getstream.video.android.core.GEO
 import io.getstream.video.android.core.RealtimeConnection
@@ -40,6 +50,7 @@ import io.getstream.video.android.core.call.state.LeaveCall
 import io.getstream.video.android.core.call.state.ToggleCamera
 import io.getstream.video.android.core.call.state.ToggleMicrophone
 import io.getstream.video.android.model.User
+import io.getstream.video.android.model.UserType
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -53,8 +64,10 @@ class MainActivity : ComponentActivity() {
         // step1 - create a user.
         val user = User(
             id = userId, // any string
-            name = "Tutorial", // name and image are used in the UI
-            role = "admin",
+            role = "user",
+            type = UserType.Authenticated,
+            name = "Josue Lubaki", // name and image are used in the UI
+            image = "https://images.unsplassh.com/photo-1507003211169-0a1dd7228f2d?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         )
 
         // step2 - initialize StreamVideo. For a production app we recommend adding the client to your Application class or di module.
@@ -69,87 +82,71 @@ class MainActivity : ComponentActivity() {
         // step3 - join a call, which type is `default` and id is `123`.
         val call = client.call(type = "default", id = callId)
         lifecycleScope.launch {
-            call.join(create = true)
+            val result = call.join(create = true)
+            result.onError {
+                Toast.makeText(applicationContext, it.message, Toast.LENGTH_LONG).show()
+            }
         }
 
         setContent {
+            // step4 - request permissions.
+            LaunchCallPermissions(call = call)
+
             CallAppTheme {
-                // step4 - apply VideTheme
+                // step5 - apply VideTheme
                 VideoTheme {
 
-//                    // step5 - render videos
-                    CallContent(
-                        modifier = Modifier.fillMaxSize(),
-                        call = call,
-                        enableInPictureInPicture = true,
-                        onBackPressed = { finish() },
-                        onCallAction = { callAction ->
-                            when (callAction) {
-                                is FlipCamera -> call.camera.flip()
-                                is ToggleCamera -> call.camera.setEnabled(callAction.isEnabled)
-                                is ToggleMicrophone -> call.microphone.setEnabled(callAction.isEnabled)
-                                is LeaveCall -> finish()
-                                else -> Unit
-                            }
-                        },
-                    )
+                    val isCameraEnabled by call.camera.isEnabled.collectAsState()
+                    val isMicrophoneEnabled by call.microphone.isEnabled.collectAsState()
+                    val connection by call.state.connection.collectAsState()
 
-                    // step5 - define required properties. Floating Video
-//                    val remoteParticipants by call.state.remoteParticipants.collectAsState()
-//                    val remoteParticipant = remoteParticipants.firstOrNull()
-//                    val me by call.state.me.collectAsState()
-//                    val connection by call.state.connection.collectAsState()
-//                    var parentSize: IntSize by remember { mutableStateOf(IntSize(0, 0)) }
-//
-//                    // step6 - request permissions.
-//                    LaunchCallPermissions(call = call)
-//
-//                    // step7 - render a local and remote videos.
-//                    Box(
-//                        contentAlignment = Alignment.Center,
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .background(VideoTheme.colors.appBackground)
-//                            .onSizeChanged { parentSize = it },
-//                    ) {
-//                        if (remoteParticipant != null) {
-//                            val remoteVideo by remoteParticipant.video.collectAsState()
-//
-//                            Column(modifier = Modifier.fillMaxSize()) {
-//                                VideoRenderer(
-//                                    modifier = Modifier.weight(1f),
-//                                    call = call,
-//                                    video = remoteVideo,
-//                                )
-//                            }
-//                        } else {
-//                            if (connection != RealtimeConnection.Connected) {
-//                                Text(
-//                                    text = "loading...",
-//                                    fontSize = 30.sp,
-//                                    color = VideoTheme.colors.textHighEmphasis,
-//                                )
-//                            } else {
-//                                Text(
-//                                    modifier = Modifier.padding(30.dp),
-//                                    text = "Join call ${call.id} in your browser",
-//                                    fontSize = 30.sp,
-//                                    color = VideoTheme.colors.textHighEmphasis,
-//                                    textAlign = TextAlign.Center,
-//                                )
-//                            }
-//                        }
-//
-//                        // floating video UI for the local video participant
-//                        if (me != null) {
-//                            FloatingParticipantVideo(
-//                                modifier = Modifier.align(Alignment.TopEnd),
-//                                call = call,
-//                                participant = me!!,
-//                                parentBounds = parentSize,
-//                            )
-//                        }
-//                    }
+                    if (connection != RealtimeConnection.Connected) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Connecting...",
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
+                    else {
+                        CallContent(
+                            modifier = Modifier.background(color = VideoTheme.colors.appBackground),
+                            call = call,
+                            onBackPressed = { onBackPressed() },
+                            controlsContent = {
+                                ControlActions(
+                                    call = call,
+                                    actions = listOf(
+                                        {
+                                            ToggleCameraAction(
+                                                modifier = Modifier.size(52.dp),
+                                                isCameraEnabled = isCameraEnabled,
+                                                onCallAction = { call.camera.setEnabled(it.isEnabled) }
+                                            )
+                                        },
+                                        {
+                                            ToggleMicrophoneAction(
+                                                modifier = Modifier.size(52.dp),
+                                                isMicrophoneEnabled = isMicrophoneEnabled,
+                                                onCallAction = { call.microphone.setEnabled(it.isEnabled) }
+                                            )
+                                        },
+                                        {
+                                            FlipCameraAction(
+                                                modifier = Modifier.size(52.dp),
+                                                onCallAction = { call.camera.flip() }
+                                            )
+                                        },
+                                    )
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }
