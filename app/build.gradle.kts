@@ -33,13 +33,6 @@ androidComponents {
                 comment = "STREAM_TOKEN"
             )
         )
-        it.buildConfigFields.put("STREAM_USER_ID",
-            BuildConfigField(
-                type = "String",
-                value = "\"$streamUserID\"",
-                comment = "STREAM_USER_ID"
-            )
-        )
         it.buildConfigFields.put("STREAM_CALL_ID",
             BuildConfigField(
                 type = "String",
@@ -62,13 +55,6 @@ androidComponents {
                 type = "String",
                 value = "\"$streamToken\"",
                 comment = "STREAM_TOKEN"
-            )
-        )
-        it.buildConfigFields.put("STREAM_USER_ID",
-            BuildConfigField(
-                type = "String",
-                value = "\"$streamUserID\"",
-                comment = "STREAM_USER_ID"
             )
         )
         it.buildConfigFields.put("STREAM_CALL_ID",
@@ -146,6 +132,17 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-//    implementation(libs.android.core)
-    implementation(libs.android.ui.compose)
+    // navigation compose
+    implementation(libs.androidx.navigation.compose)
+
+    // io.getstream
+    implementation(libs.stream.ui.compose)
+    implementation(libs.stream.preview.data)
+
+    // extended icons
+    implementation(libs.androidx.icons.extended)
+
+    // Koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 }

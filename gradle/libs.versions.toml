@@ -9,6 +9,12 @@ lifecycleRuntimeKtx = "2.6.2"
 activityCompose = "1.8.2"
 composeBom = "2023.10.01"
 streamVersion = "0.5.0"
+appcompat = "1.6.1"
+material = "1.11.0"
+activity = "1.8.0"
+navigationCompose = "2.7.6"
+extendedIconVersion = "1.5.4"
+koinVersion = "3.5.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,8 +32,12 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
-android-core = { group = "io.getstream", name = "stream-video-android-core", version.ref = "streamVersion" }
-android-ui-compose = { group = "io.getstream", name = "stream-video-android-ui-compose", version.ref = "streamVersion" }
+stream-ui-compose = { group = "io.getstream", name = "stream-video-android-ui-compose", version.ref = "streamVersion" }
+stream-preview-data = { group = "io.getstream", name = "stream-video-android-previewdata", version.ref = "streamVersion" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinVersion" }
+androidx-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "extendedIconVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
