@@ -23,9 +23,9 @@ class MainActivity : ComponentActivity() {
                         onNavigateToRoute = { route ->
                             navHostController.navigate(route){
                                 launchSingleTop = true
-                                popUpTo(navHostController.graph.startDestinationId){
-                                    inclusive = true
-                                }
+//                                popUpTo(navHostController.graph.startDestinationId){
+//                                    inclusive = true
+//                                }
                             }
                         }
                     )
