@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">VidTalk</string>
+    <string name="direct_call">Direct Call</string>
+    <string name="sign_out">Sign out</string>
+    <string name="you_are_offline">You are offline. Check your internet connection.</string>
+    <string name="join_description">Build reliable video calling, audio rooms, and live streaming with our easy-to-use SDKs and global edge network</string>
+    <string name="call_id_number">Call ID Number</string>
+    <string name="join_call_no_id_hint">Don\'t have a Call ID?</string>
+    <string name="start_a_new_call">Start a New Call</string>
+    <string name="join_call_call_id_hint">Call ID</string>
+    <string name="join_call">Join Call</string>
+    <string name="are_you_sure_sign_out">Are you sure you want to sign out?</string>
+    <string name="cancel">Cancel</string>
+    <string name="stream_video">Stream Video</string>
+    <string name="call_lobby_description">Try out a video call in this demo powered by Stream\'s video SDK</string>
+    <string name="join_call_description">You are about to join a call. %d more people are in the call.</string>
+</resources>
